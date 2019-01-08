@@ -1,0 +1,113 @@
+<html>
+<head>
+
+<link href='https://fonts.googleapis.com/css?family=Orbitron' rel='stylesheet' type='text/css'>
+<style>
+body{font-family:"Arial";background-color:darkblue;}
+.light{width:5vw;height:5vw;border-radius:5vw;background-color:grey;text-align:center;font-size:4vw;color:white;float:left;margin:0.2vw;}
+.lit{background-color:yellow;color:black;box-shadow: 0px 0px 25px yellow;}
+#jackpotDisplay{text-align:center;font-size:7vw;width:25vw;padding:1vw;margin:auto;margin-bottom:10px;font-family: 'Orbitron', sans-serif;color:red;text-shadow:0px 0px 2vw red;background-color:darkred;border:0.5vw solid black;}
+#score{font-size:7vw;color:white;text-align:center;}
+</style>
+
+</head>
+
+<body>
+<h1 style="color:white;text-align:center;">Stop the Light Game</h1>
+<p style="color:white;text-align:center;">Tap the screen to stop the light.  Stop the light on the "JP" circle to win the Jackpot.</p>
+<div id="jackpotDisplay">100</div>
+
+<div id="lights"></div><br style="clear:both;" />
+<div id="score">Score: 0</div>
+<!--<button onclick="buttonPress()" style="width:85%;text-size:7vw;height:15vh;margin:auto;">Stop!</button>-->
+<script>
+function tick(){
+	
+	if (active){
+		advLight();
+	}else{
+		if (lights[lightIndex].className == "light"){
+			lights[lightIndex].className = "light lit";
+		}else{
+			lights[lightIndex].className = "light";
+		}
+	waitCount--;
+	if (waitCount < 0){waitCount = 50;active=true;
+	if (lightIndex != jackpotID){
+		if (Math.abs(lightIndex-jackpotID) <= 1){score += 10;}
+		else if (Math.abs(lightIndex-jackpotID) <= 2){score += 5;}
+		else if (Math.abs(lightIndex-jackpotID) <= 3){score += 2;}
+		else if (Math.abs(lightIndex-jackpotID) <= 4){score += 1;}
+		jackpotVal += 5;
+	}
+	else{
+		score += jackpotVal;
+		jackpotVal = Math.round(jackpotVal * 0.75);
+	}
+	document.getElementById("score").innerHTML = "Score: " + score;
+	document.getElementById("jackpotDisplay").innerHTML = jackpotVal;}
+	}
+	
+	setTimeout(tick, 40);
+}
+
+function advLight(){
+	lights[lightIndex].className = "light";
+	lightIndex += 1;
+	if (lightIndex > NUMBER_OF_LIGHTS){lightIndex = 0;}
+	lights[lightIndex].className = "light lit";
+}
+
+lightsCode = "";
+NUMBER_OF_LIGHTS = 17;jackpotID = Math.round(NUMBER_OF_LIGHTS / 2);
+i = 0;
+
+while (i <= NUMBER_OF_LIGHTS){
+	lightsCode = lightsCode + "<div class='light'>";
+	if (i==jackpotID){lightsCode = lightsCode + "JP";}
+	else if (Math.abs(i-jackpotID) <= 1){lightsCode = lightsCode + "10";}
+	else if (Math.abs(i-jackpotID) <= 2){lightsCode = lightsCode + "5";}
+	else if (Math.abs(i-jackpotID) <= 3){lightsCode = lightsCode + "2";}
+	else if (Math.abs(i-jackpotID) <= 4){lightsCode = lightsCode + "1";}
+	else{lightsCode = lightsCode + "-";}
+	lightsCode = lightsCode + "</div>";
+	i++;
+}
+
+document.getElementById("lights").innerHTML = lightsCode;
+lights = document.getElementsByClassName("light");
+lightIndex = 0;
+active = true;
+waitCount = 50;
+jackpotVal = 100;
+score=0;
+
+tick();
+
+function buttonPress(){
+	active = false;
+}
+
+document.body.onkeydown = function(e){
+    if(e.keyCode == 32){
+        buttonPress();
+    }
+}
+
+document.onclick = function(){
+ // your code
+ buttonPress();
+}
+
+document.ontouchstart = function(){
+ // your code
+ buttonPress();
+}
+
+
+
+
+//setTimeout(tick(), 100);
+</script>
+
+</html>
